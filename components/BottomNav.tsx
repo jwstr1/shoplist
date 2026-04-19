@@ -14,20 +14,27 @@ const NAV_ITEMS: { id: NavItem; label: string; href: string; Icon: React.Compone
 
 export default function BottomNav({ active }: { active: NavItem }) {
   return (
-    <nav className="fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 z-40"
-      style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}
+    <nav
+      className="fixed bottom-0 inset-x-0 z-50 bg-gray-950/95 backdrop-blur-xl border-t border-white/10"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
-      <div className="flex">
+      <div className="flex max-w-lg mx-auto">
         {NAV_ITEMS.map(({ id, label, href, Icon }) => (
           <Link
             key={id}
             href={href}
-            className={`flex-1 flex flex-col items-center pt-2 pb-1 min-h-[44px] transition-colors ${
-              active === id ? 'text-brand-600' : 'text-gray-400'
+            className={`flex-1 flex flex-col items-center py-3 gap-1 transition-all press-effect touch-target ${
+              active === id
+                ? 'text-emerald-400'
+                : 'text-gray-600 hover:text-gray-400'
             }`}
           >
-            <Icon className="w-5 h-5" />
-            <span className="text-[10px] font-medium mt-0.5">{label}</span>
+            <div className={`relative ${active === id ? 'after:absolute after:-inset-2 after:bg-emerald-500/10 after:rounded-xl' : ''}`}>
+              <Icon className={`w-5 h-5 transition-transform ${active === id ? 'scale-110' : ''}`} />
+            </div>
+            <span className={`text-[10px] font-semibold tracking-wide ${active === id ? 'text-emerald-400' : 'text-gray-600'}`}>
+              {label}
+            </span>
           </Link>
         ))}
       </div>
