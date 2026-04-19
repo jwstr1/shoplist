@@ -7,355 +7,650 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
-      households: {
-        Row: {
-          id: string
-          name: string
-          invite_code: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          name: string
-          invite_code?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          name?: string
-          invite_code?: string | null
-          created_at?: string
-        }
-      }
       household_members: {
         Row: {
-          id: string
           household_id: string
-          user_id: string
-          role: 'owner' | 'member'
+          id: string
           joined_at: string
+          role: string
+          user_id: string
         }
         Insert: {
-          id?: string
           household_id: string
-          user_id: string
-          role?: 'owner' | 'member'
+          id?: string
           joined_at?: string
+          role?: string
+          user_id: string
         }
         Update: {
-          role?: 'owner' | 'member'
+          household_id?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "household_members_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       household_settings: {
         Row: {
-          household_id: string
-          home_store_id: string | null
           home_postcode: string | null
+          home_store_id: string | null
+          household_id: string
           preferred_chain: string | null
           updated_at: string
         }
         Insert: {
-          household_id: string
-          home_store_id?: string | null
           home_postcode?: string | null
+          home_store_id?: string | null
+          household_id: string
           preferred_chain?: string | null
           updated_at?: string
         }
         Update: {
-          home_store_id?: string | null
           home_postcode?: string | null
+          home_store_id?: string | null
+          household_id?: string
           preferred_chain?: string | null
           updated_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "household_settings_home_store_id_fkey"
+            columns: ["home_store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "household_settings_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: true
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
       }
-      products: {
+      households: {
         Row: {
-          id: string
-          household_id: string
-          name: string
-          canonical_name: string
-          barcode: string | null
-          default_category: string
-          default_unit: string | null
           created_at: string
+          id: string
+          invite_code: string | null
+          name: string
         }
         Insert: {
-          id?: string
-          household_id: string
-          name: string
-          canonical_name: string
-          barcode?: string | null
-          default_category?: string
-          default_unit?: string | null
           created_at?: string
+          id?: string
+          invite_code?: string | null
+          name: string
         }
         Update: {
-          name?: string
-          canonical_name?: string
-          barcode?: string | null
-          default_category?: string
-          default_unit?: string | null
-        }
-      }
-      shopping_lists: {
-        Row: {
-          id: string
-          household_id: string
-          name: string
-          store_id: string | null
-          created_at: string
-          completed_at: string | null
-        }
-        Insert: {
-          id?: string
-          household_id: string
-          name?: string
-          store_id?: string | null
           created_at?: string
-          completed_at?: string | null
-        }
-        Update: {
+          id?: string
+          invite_code?: string | null
           name?: string
-          store_id?: string | null
-          completed_at?: string | null
         }
+        Relationships: []
       }
       list_items: {
         Row: {
-          id: string
-          list_id: string
-          product_id: string | null
-          name: string
-          category: string
-          quantity: number
-          unit: string | null
-          checked: boolean
-          sort_order: number
           added_by: string | null
-          checked_by: string | null
+          category: string
+          checked: boolean
           checked_at: string | null
-          estimated_price: number | null
+          checked_by: string | null
           created_at: string
+          estimated_price: number | null
+          id: string
+          list_id: string
+          name: string
+          product_id: string | null
+          quantity: number
+          sort_order: number
+          unit: string | null
         }
         Insert: {
+          added_by?: string | null
+          category?: string
+          checked?: boolean
+          checked_at?: string | null
+          checked_by?: string | null
+          created_at?: string
+          estimated_price?: number | null
           id?: string
           list_id: string
-          product_id?: string | null
           name: string
-          category?: string
+          product_id?: string | null
           quantity?: number
-          unit?: string | null
-          checked?: boolean
           sort_order?: number
+          unit?: string | null
+        }
+        Update: {
           added_by?: string | null
-          checked_by?: string | null
-          checked_at?: string | null
-          estimated_price?: number | null
-          created_at?: string
-        }
-        Update: {
-          product_id?: string | null
-          name?: string
           category?: string
-          quantity?: number
-          unit?: string | null
           checked?: boolean
-          sort_order?: number
-          checked_by?: string | null
           checked_at?: string | null
-          estimated_price?: number | null
-        }
-      }
-      receipts: {
-        Row: {
-          id: string
-          household_id: string
-          store_name: string | null
-          store_id: string | null
-          store_chain: string | null
-          total: number | null
-          purchase_date: string | null
-          raw_text: string | null
-          parsed_json: Json | null
-          image_url: string | null
-          uploaded_by: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          household_id: string
-          store_name?: string | null
-          store_id?: string | null
-          store_chain?: string | null
-          total?: number | null
-          purchase_date?: string | null
-          raw_text?: string | null
-          parsed_json?: Json | null
-          image_url?: string | null
-          uploaded_by?: string | null
+          checked_by?: string | null
           created_at?: string
-        }
-        Update: {
-          store_name?: string | null
-          store_id?: string | null
-          store_chain?: string | null
-          total?: number | null
-          purchase_date?: string | null
-          raw_text?: string | null
-          parsed_json?: Json | null
-          image_url?: string | null
-        }
-      }
-      purchase_history: {
-        Row: {
-          id: string
-          household_id: string
-          product_id: string | null
-          store_id: string | null
-          receipt_id: string | null
-          product_name: string
-          price: number | null
-          quantity: number | null
-          unit: string | null
-          purchased_at: string
-        }
-        Insert: {
+          estimated_price?: number | null
           id?: string
-          household_id: string
+          list_id?: string
+          name?: string
           product_id?: string | null
-          store_id?: string | null
-          receipt_id?: string | null
-          product_name: string
-          price?: number | null
-          quantity?: number | null
+          quantity?: number
+          sort_order?: number
           unit?: string | null
-          purchased_at?: string
         }
-        Update: {
-          price?: number | null
-          quantity?: number | null
-        }
+        Relationships: [
+          {
+            foreignKeyName: "list_items_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "shopping_lists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "list_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       market_prices: {
         Row: {
+          fetched_at: string
           id: string
+          is_special: boolean
+          price: number
           product_name: string
-          store_name: string
           store_chain: string
           store_id: string | null
-          price: number
+          store_name: string
           unit: string | null
           unit_price: number | null
           unit_type: string | null
-          is_special: boolean
           was_price: number | null
-          fetched_at: string
         }
         Insert: {
+          fetched_at?: string
           id?: string
+          is_special?: boolean
+          price: number
           product_name: string
-          store_name: string
           store_chain: string
           store_id?: string | null
-          price: number
+          store_name: string
           unit?: string | null
           unit_price?: number | null
           unit_type?: string | null
-          is_special?: boolean
           was_price?: number | null
-          fetched_at?: string
         }
         Update: {
-          price?: number
-          unit_price?: number | null
-          is_special?: boolean
-          was_price?: number | null
           fetched_at?: string
+          id?: string
+          is_special?: boolean
+          price?: number
+          product_name?: string
+          store_chain?: string
+          store_id?: string | null
+          store_name?: string
+          unit?: string | null
+          unit_price?: number | null
+          unit_type?: string | null
+          was_price?: number | null
         }
+        Relationships: [
+          {
+            foreignKeyName: "market_prices_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          barcode: string | null
+          canonical_name: string
+          created_at: string
+          default_category: string
+          default_unit: string | null
+          household_id: string
+          id: string
+          name: string
+        }
+        Insert: {
+          barcode?: string | null
+          canonical_name: string
+          created_at?: string
+          default_category?: string
+          default_unit?: string | null
+          household_id: string
+          id?: string
+          name: string
+        }
+        Update: {
+          barcode?: string | null
+          canonical_name?: string
+          created_at?: string
+          default_category?: string
+          default_unit?: string | null
+          household_id?: string
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_history: {
+        Row: {
+          household_id: string
+          id: string
+          price: number | null
+          product_id: string | null
+          product_name: string
+          purchased_at: string
+          quantity: number | null
+          receipt_id: string | null
+          store_id: string | null
+          unit: string | null
+        }
+        Insert: {
+          household_id: string
+          id?: string
+          price?: number | null
+          product_id?: string | null
+          product_name: string
+          purchased_at?: string
+          quantity?: number | null
+          receipt_id?: string | null
+          store_id?: string | null
+          unit?: string | null
+        }
+        Update: {
+          household_id?: string
+          id?: string
+          price?: number | null
+          product_id?: string | null
+          product_name?: string
+          purchased_at?: string
+          quantity?: number | null
+          receipt_id?: string | null
+          store_id?: string | null
+          unit?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_history_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_history_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_history_receipt_id_fkey"
+            columns: ["receipt_id"]
+            isOneToOne: false
+            referencedRelation: "receipts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_history_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      receipts: {
+        Row: {
+          created_at: string
+          household_id: string
+          id: string
+          image_url: string | null
+          parsed_json: Json | null
+          purchase_date: string | null
+          raw_text: string | null
+          store_chain: string | null
+          store_id: string | null
+          store_name: string | null
+          total: number | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          household_id: string
+          id?: string
+          image_url?: string | null
+          parsed_json?: Json | null
+          purchase_date?: string | null
+          raw_text?: string | null
+          store_chain?: string | null
+          store_id?: string | null
+          store_name?: string | null
+          total?: number | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          household_id?: string
+          id?: string
+          image_url?: string | null
+          parsed_json?: Json | null
+          purchase_date?: string | null
+          raw_text?: string | null
+          store_chain?: string | null
+          store_id?: string | null
+          store_name?: string | null
+          total?: number | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "receipts_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "receipts_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shopping_lists: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          household_id: string
+          id: string
+          name: string
+          store_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          household_id: string
+          id?: string
+          name?: string
+          store_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          household_id?: string
+          id?: string
+          name?: string
+          store_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shopping_lists_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shopping_lists_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       stores: {
         Row: {
-          id: string
-          name: string
-          chain: 'woolworths' | 'coles' | 'aldi' | 'iga' | 'other'
-          postcode: string
-          suburb: string
-          state: string
-          external_id: string | null
           address: string | null
+          chain: string
+          created_at: string
+          external_id: string | null
+          id: string
           latitude: number | null
           longitude: number | null
-          created_at: string
+          name: string
+          postcode: string
+          state: string
+          suburb: string
         }
         Insert: {
-          id?: string
-          name: string
-          chain: 'woolworths' | 'coles' | 'aldi' | 'iga' | 'other'
-          postcode: string
-          suburb: string
-          state: string
-          external_id?: string | null
           address?: string | null
+          chain: string
+          created_at?: string
+          external_id?: string | null
+          id?: string
           latitude?: number | null
           longitude?: number | null
-          created_at?: string
+          name: string
+          postcode: string
+          state: string
+          suburb: string
         }
         Update: {
-          name?: string
           address?: string | null
+          chain?: string
+          created_at?: string
+          external_id?: string | null
+          id?: string
           latitude?: number | null
           longitude?: number | null
+          name?: string
+          postcode?: string
+          state?: string
+          suburb?: string
         }
+        Relationships: []
       }
       user_profiles: {
         Row: {
-          id: string
-          display_name: string | null
           avatar_url: string | null
-          default_household_id: string | null
           created_at: string
+          default_household_id: string | null
+          display_name: string | null
+          id: string
           updated_at: string
         }
         Insert: {
-          id: string
-          display_name?: string | null
           avatar_url?: string | null
-          default_household_id?: string | null
           created_at?: string
+          default_household_id?: string | null
+          display_name?: string | null
+          id: string
           updated_at?: string
         }
         Update: {
-          display_name?: string | null
           avatar_url?: string | null
+          created_at?: string
           default_household_id?: string | null
+          display_name?: string | null
+          id?: string
           updated_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "user_profiles_default_household_id_fkey"
+            columns: ["default_household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
+    Views: {
+      [_ in never]: never
+    }
     Functions: {
-      is_household_member: {
-        Args: { hid: string }
-        Returns: boolean
-      }
-      is_household_owner: {
-        Args: { hid: string }
-        Returns: boolean
-      }
+      is_household_member: { Args: { hid: string }; Returns: boolean }
+      is_household_owner: { Args: { hid: string }; Returns: boolean }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
     }
   }
 }
 
-// Convenience row types
-export type Household = Database['public']['Tables']['households']['Row']
-export type HouseholdMember = Database['public']['Tables']['household_members']['Row']
-export type HouseholdSettings = Database['public']['Tables']['household_settings']['Row']
-export type Product = Database['public']['Tables']['products']['Row']
-export type ShoppingList = Database['public']['Tables']['shopping_lists']['Row']
-export type ListItem = Database['public']['Tables']['list_items']['Row']
-export type Receipt = Database['public']['Tables']['receipts']['Row']
-export type PurchaseHistory = Database['public']['Tables']['purchase_history']['Row']
-export type MarketPrice = Database['public']['Tables']['market_prices']['Row']
-export type Store = Database['public']['Tables']['stores']['Row']
-export type UserProfile = Database['public']['Tables']['user_profiles']['Row']
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const

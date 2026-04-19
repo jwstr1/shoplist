@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import ShoppingListPageClient from './ShoppingListPageClient'
@@ -7,7 +8,7 @@ interface Props {
 }
 
 export default async function ShoppingListPage({ params }: Props) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth')
