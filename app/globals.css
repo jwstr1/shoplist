@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand: #22c55e;
+  --brand-dark: #16a34a;
+  --safe-bottom: env(safe-area-inset-bottom);
+  --safe-top: env(safe-area-inset-top);
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    /* Prevent iOS bounce scroll */
+    overscroll-behavior: none;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900;
+    font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', Arial, sans-serif;
+    /* Account for iPhone notch at top */
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+@layer utilities {
+  /* Safe area bottom padding for sticky bottom bars */
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .pb-safe-2 {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
+
+  /* Minimum touch target */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+
+  /* Overscroll for list containers */
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+
+  /* Checked item style */
+  .item-checked {
+    @apply line-through text-gray-400;
+  }
+
+  /* Slide-in animation for new items */
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.2s ease-out;
+  }
+
+  /* Pulse for realtime indicator */
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .animate-pulse-dot {
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+}
+
+/* Scrollbar styling for WebKit */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 2px;
+}
