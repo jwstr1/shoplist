@@ -4,10 +4,11 @@ import { createClient } from '@/lib/supabase/server'
 import ShoppingListPageClient from './ShoppingListPageClient'
 
 interface Props {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export default async function ShoppingListPage({ params }: Props) {
+  const { id } = await params
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -16,7 +17,7 @@ export default async function ShoppingListPage({ params }: Props) {
   const { data: list, error } = await supabase
     .from('shopping_lists')
     .select('*, stores(id, name, chain)')
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (error || !list) redirect('/list')
@@ -24,10 +25,10 @@ export default async function ShoppingListPage({ params }: Props) {
   const { data: items } = await supabase
     .from('list_items')
     .select('*')
-    .eq('list_id', params.id)
+    .eq('list_id', id)
     .order('sort_order', { ascending: true })
 
-  // Get all household lists for switcher
+  // Get all household active lists for the switcher
   const { data: allLists } = await supabase
     .from('shopping_lists')
     .select('id, name, created_at')

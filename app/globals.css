@@ -106,10 +106,12 @@ input, select, textarea {
 }
 
 /* Scrollbar hide for clean mobile look */
-.no-scrollbar::-webkit-scrollbar {
+.no-scrollbar::-webkit-scrollbar,
+.scroll-container::-webkit-scrollbar {
   display: none;
 }
-.no-scrollbar {
+.no-scrollbar,
+.scroll-container {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }

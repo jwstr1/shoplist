@@ -654,3 +654,9 @@ export const Constants = {
     Enums: {},
   },
 } as const
+
+// Convenience aliases
+export type ListItem = Tables<'list_items'>
+export type ShoppingList = Tables<'shopping_lists'>
+export type Store = Tables<'stores'>
+export type Product = Tables<'products'>
