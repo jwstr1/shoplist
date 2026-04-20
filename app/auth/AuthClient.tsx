@@ -51,7 +51,7 @@ export default function AuthClient() {
       return
     }
     if (data.session) {
-      await createDefaultHousehold(data.session.user.id, name)
+      await createDefaultHousehold(name)
       router.push('/list')
       router.refresh()
     } else {
@@ -61,15 +61,16 @@ export default function AuthClient() {
     }
   }
 
-  async function createDefaultHousehold(userId: string, displayName: string) {
+  async function createDefaultHousehold(displayName: string) {
     try {
-      const { data: household } = await supabase
-        .from('households').insert({ name: `${displayName.split(' ')[0]}'s Household` }).select().single()
-      if (household) {
-        await supabase.from('household_members').insert({ household_id: household.id, user_id: userId, role: 'owner' })
-        await supabase.from('user_profiles').upsert({ id: userId, display_name: displayName, default_household_id: household.id })
-        await supabase.from('shopping_lists').insert({ household_id: household.id, name: 'Weekly Shop' })
-      }
+      await fetch('/api/household', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          householdName: `${displayName.split(' ')[0]}'s Household`,
+          listName: 'Weekly Shop',
+        }),
+      })
     } catch (err) { console.error('Failed to create household:', err) }
   }
 
